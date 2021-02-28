@@ -2,7 +2,7 @@ import galleryDataArr from './data/gallery-items.js';
 
 const galleryListRef = document.querySelector('.js-gallery');
 
-renderGalleryDataAtEnd(galleryDataArr);
+renderGalleryToEnd(galleryDataArr);
 
 galleryListRef.addEventListener('click', onGalleryListClick);
 
@@ -19,7 +19,7 @@ function generateGalleryMarkup(galleryDataArr) {
   );
 }
 
-function renderGalleryDataAtEnd(galleryDataArr) {
+function renderGalleryToEnd(galleryDataArr) {
   galleryListRef.insertAdjacentHTML(
     'beforeend',
     generateGalleryMarkup(galleryDataArr),
