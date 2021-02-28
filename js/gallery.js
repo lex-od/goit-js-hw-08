@@ -4,6 +4,8 @@ const galleryListRef = document.querySelector('.js-gallery');
 
 renderGalleryDataAtEnd(galleryDataArr);
 
+galleryListRef.addEventListener('click', onGalleryListClick);
+
 function generateGalleryMarkup(galleryDataArr) {
   return galleryDataArr.reduce(
     (markupAcc, { preview, original, description }) =>
@@ -22,4 +24,12 @@ function renderGalleryDataAtEnd(galleryDataArr) {
     'beforeend',
     generateGalleryMarkup(galleryDataArr),
   );
+}
+
+function onGalleryListClick(e) {
+  e.preventDefault();
+
+  if (!e.target.classList.contains('gallery__image')) return;
+
+  console.log(e.target.dataset.source);
 }
