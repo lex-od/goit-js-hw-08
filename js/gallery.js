@@ -47,29 +47,36 @@ function onGalleryListClick(e) {
 
   if (!e.target.classList.contains('gallery__image')) return;
 
-  currentGalleryImgRef = e.target;
+  setCurrentGalleryImg({ ref: e.target });
   openLightboxWithCurrent();
 }
 
-function setPrevGalleryImg() {
-  const prevGalleryImgRef = currentGalleryImgRef
+function setCurrentGalleryImg({ sibling, ref }) {
+  if (ref?.nodeName === 'IMG') {
+    currentGalleryImgRef = ref;
+    return true;
+  }
+
+  let siblingProp = '';
+
+  switch (sibling) {
+    case 'next':
+      siblingProp = 'nextElementSibling';
+      break;
+    case 'prev':
+      siblingProp = 'previousElementSibling';
+      break;
+    default:
+      return false;
+  }
+
+  const newGalleryImgRef = currentGalleryImgRef
     ?.closest('.gallery__item')
-    ?.previousElementSibling?.querySelector('.gallery__image');
+    ?.[siblingProp]?.querySelector('.gallery__image');
 
-  if (!prevGalleryImgRef) return false;
+  if (!newGalleryImgRef) return false;
 
-  currentGalleryImgRef = prevGalleryImgRef;
-  return true;
-}
-
-function setNextGalleryImg() {
-  const nextGalleryImgRef = currentGalleryImgRef
-    ?.closest('.gallery__item')
-    ?.nextElementSibling?.querySelector('.gallery__image');
-
-  if (!nextGalleryImgRef) return false;
-
-  currentGalleryImgRef = nextGalleryImgRef;
+  currentGalleryImgRef = newGalleryImgRef;
   return true;
 }
 
@@ -111,10 +118,10 @@ function onLightboxKeyDown(e) {
       closeLightbox();
       break;
     case ARROW_LEFT_KEY_CODE:
-      if (setPrevGalleryImg()) setLightboxImgCurrent();
+      if (setCurrentGalleryImg({ sibling: 'prev' })) setLightboxImgCurrent();
       break;
     case ARROW_RIGHT_KEY_CODE:
-      if (setNextGalleryImg()) setLightboxImgCurrent();
+      if (setCurrentGalleryImg({ sibling: 'next' })) setLightboxImgCurrent();
       break;
   }
 }
