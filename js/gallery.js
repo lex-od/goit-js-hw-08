@@ -47,27 +47,46 @@ function onGalleryListClick(e) {
 
   if (!e.target.classList.contains('gallery__image')) return;
 
-  openLightbox(e.target);
+  currentGalleryImgRef = e.target;
+  openLightboxWithCurrent();
 }
 
-function getPrevGalleryImg() {
-  return currentGalleryImgRef
-    .closest('.gallery__item')
-    .previousElementSibling?.querySelector('.gallery__image');
+function setPrevGalleryImg() {
+  const prevGalleryImgRef = currentGalleryImgRef
+    ?.closest('.gallery__item')
+    ?.previousElementSibling?.querySelector('.gallery__image');
+
+  if (!prevGalleryImgRef) return false;
+
+  currentGalleryImgRef = prevGalleryImgRef;
+  return true;
 }
 
-function getNextGalleryImg() {
-  return currentGalleryImgRef
-    .closest('.gallery__item')
-    .nextElementSibling?.querySelector('.gallery__image');
+function setNextGalleryImg() {
+  const nextGalleryImgRef = currentGalleryImgRef
+    ?.closest('.gallery__item')
+    ?.nextElementSibling?.querySelector('.gallery__image');
+
+  if (!nextGalleryImgRef) return false;
+
+  currentGalleryImgRef = nextGalleryImgRef;
+  return true;
 }
 
 // ==================== 📌 LIGHTBOX FUNCTIONS ====================
 
-function openLightbox(imgRef) {
-  currentGalleryImgRef = imgRef;
-  lightboxImgRef.src = imgRef.dataset.source;
-  lightboxImgRef.alt = imgRef.alt;
+function setLightboxImgCurrent() {
+  lightboxImgRef.src = currentGalleryImgRef.dataset.source;
+  lightboxImgRef.alt = currentGalleryImgRef.alt;
+}
+
+function clearLightboxImg() {
+  lightboxImgRef.src = '';
+  lightboxImgRef.alt = '';
+}
+
+function openLightboxWithCurrent() {
+  setLightboxImgCurrent();
 
   window.addEventListener('keydown', onLightboxKeyDown);
 
@@ -79,9 +98,7 @@ function closeLightbox() {
 
   window.removeEventListener('keydown', onLightboxKeyDown);
 
-  lightboxImgRef.src = '';
-  lightboxImgRef.alt = '';
-  currentGalleryImgRef = null;
+  clearLightboxImg();
 }
 
 function onLightboxKeyDown(e) {
@@ -89,17 +106,15 @@ function onLightboxKeyDown(e) {
   const ARROW_LEFT_KEY_CODE = 'ArrowLeft';
   const ARROW_RIGHT_KEY_CODE = 'ArrowRight';
 
-  // if (e.code === ESC_KEY_CODE) closeLightbox();
-
   switch (e.code) {
     case ESC_KEY_CODE:
       closeLightbox();
       break;
     case ARROW_LEFT_KEY_CODE:
-      console.log(getPrevGalleryImg());
+      if (setPrevGalleryImg()) setLightboxImgCurrent();
       break;
     case ARROW_RIGHT_KEY_CODE:
-      // console.log(currentGalleryImgRef.nextElementSibling);
+      if (setNextGalleryImg()) setLightboxImgCurrent();
       break;
   }
 }
